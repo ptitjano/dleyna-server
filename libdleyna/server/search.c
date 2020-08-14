@@ -68,6 +68,11 @@ gchar *dls_search_translate_search_string(GHashTable *filter_map,
 		if (!value)
 			goto on_error;
 
+		/* Do not try to translate the value if it is an
+		   upnp object. */
+		if (g_str_has_prefix(value + 1, "object"))
+		  goto next;
+
 		/* Handle special cases where we need to translate
 		   value as well as property name */
 
@@ -123,7 +128,9 @@ gchar *dls_search_translate_search_string(GHashTable *filter_map,
 		g_string_append_printf(str, "%s %s %s",
 				       prop_map->upnp_prop_name, op, value);
 		old_end_pos = end_pos;
+		goto next;
 
+	next:
 		g_free(value);
 		g_free(prop);
 		g_free(op);
