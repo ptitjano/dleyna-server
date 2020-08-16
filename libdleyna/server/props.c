@@ -35,6 +35,7 @@
 static const gchar gUPnPObject[] = "object";
 static const gchar gUPnPContainer[] = "object.container";
 static const gchar gUPnPAlbum[] = "object.container.album";
+static const gchar gUPnPPerson[] = "object.container.person";
 static const gchar gUPnPAudioItem[] = "object.item.audioItem";
 static const gchar gUPnPVideoItem[] = "object.item.videoItem";
 static const gchar gUPnPImageItem[] = "object.item.imageItem";
@@ -46,6 +47,8 @@ static const unsigned int gUPnPContainerLen =
 	(sizeof(gUPnPContainer) / sizeof(gchar)) - 1;
 static const unsigned int gUPnPAlbumLen =
 	(sizeof(gUPnPAlbum) / sizeof(gchar)) - 1;
+static const unsigned int gUPnPPersonLen =
+	(sizeof(gUPnPPerson) / sizeof(gchar)) - 1;
 static const unsigned int gUPnPAudioItemLen =
 	(sizeof(gUPnPAudioItem) / sizeof(gchar)) - 1;
 static const unsigned int gUPnPVideoItemLen =
@@ -56,12 +59,14 @@ static const unsigned int gUPnPItemLen =
 	(sizeof(gUPnPItem) / sizeof(gchar)) - 1;
 
 static const gchar gUPnPMusicAlbum[] = "object.container.album.musicAlbum";
+static const gchar gUPnPMusicArtist[] = "object.container.person.musicArtist";
 static const gchar gUPnPMusicTrack[] = "object.item.audioItem.musicTrack";
 static const gchar gUPnPMovie[] = "object.item.videoItem.movie";
 static const gchar gUPnPPhoto[] = "object.item.imageItem.photo";
 
 static const gchar gMediaSpec2Container[] = "container";
 static const gchar gMediaSpec2AudioAlbum[] = "musicAlbum";
+static const gchar gMediaSpec2AudioArtist[] = "musicArtist";
 static const gchar gMediaSpec2AudioMusic[] = "music";
 static const gchar gMediaSpec2Audio[] = "audio";
 static const gchar gMediaSpec2Video[] = "video";
@@ -1154,6 +1159,8 @@ static const gchar *prv_media_spec_to_upnp_class(const gchar *m2spec_class)
 		retval = gUPnPContainer;
 	else if (!strcmp(m2spec_class, gMediaSpec2AudioAlbum))
 		retval = gUPnPMusicAlbum;
+	else if (!strcmp(m2spec_class, gMediaSpec2AudioArtist))
+		retval = gUPnPMusicArtist;
 	else if (!strcmp(m2spec_class, gMediaSpec2AudioMusic))
 		retval = gUPnPMusicTrack;
 	else if (!strcmp(m2spec_class, gMediaSpec2Audio))
@@ -1234,6 +1241,13 @@ static const gchar *prv_upnp_class_to_media_spec(const gchar *upnp_class,
 		ptr = upnp_class + gUPnPAlbumLen;
 		if (!strcmp(ptr, ".musicAlbum")) {
 			retval = gMediaSpec2AudioAlbum;
+			*exact = TRUE;
+		} else
+			goto on_error;
+	} else if (!strncmp(upnp_class, gUPnPPerson, gUPnPPersonLen)) {
+		ptr = upnp_class + gUPnPPersonLen;
+		if (!strcmp(ptr, ".musicArtist")) {
+			retval = gMediaSpec2AudioArtist;
 			*exact = TRUE;
 		} else
 			goto on_error;
